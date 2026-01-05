@@ -31,6 +31,12 @@ module.exports = {
       enabled: false,  // Disable HTTPS for now to match Python server behavior
       keyPath: './certs/key.pem',
       certPath: './certs/cert.pem'
+    },
+    // Basic Auth configuration
+    auth: {
+      enabled: process.env.AUTH_ENABLED !== 'false', // Enable by default, disable with AUTH_ENABLED=false
+      username: process.env.AUTH_USERNAME || 'admin',
+      password: process.env.AUTH_PASSWORD || 'admin123'
     }
   },
   

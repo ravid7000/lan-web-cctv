@@ -9,6 +9,36 @@ const fs = require('fs');
 
 const app = express();
 
+// Basic Auth middleware
+function basicAuth(req, res, next) {
+  if (!config.server.auth?.enabled) {
+    return next();
+  }
+
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Basic ')) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="LAN CCTV"');
+    return res.status(401).send('Authentication required');
+  }
+
+  // Decode credentials
+  const base64Credentials = authHeader.split(' ')[1];
+  const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+  const [username, password] = credentials.split(':');
+
+  // Verify credentials
+  if (username === config.server.auth.username && password === config.server.auth.password) {
+    return next();
+  }
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="LAN CCTV"');
+  return res.status(401).send('Invalid credentials');
+}
+
+// Apply basic auth to all routes
+app.use(basicAuth);
+
 // Create HTTP or HTTPS server based on configuration
 let server;
 if (config.server.https?.enabled) {
@@ -140,6 +170,14 @@ async function start() {
       console.log('  LAN CCTV Server Started');
       console.log('========================================\n');
       console.log(`Server running on port ${config.server.port}`);
+      
+      if (config.server.auth?.enabled) {
+        console.log(`\n🔐 Basic Auth enabled`);
+        console.log(`   Username: ${config.server.auth.username}`);
+        console.log(`   Password: ${config.server.auth.password}`);
+        console.log(`   (Set AUTH_USERNAME and AUTH_PASSWORD env vars to customize)`);
+      }
+      
       console.log('\nAccess URLs:');
       
       const localIPs = config.getLocalIPs();

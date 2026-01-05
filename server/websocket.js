@@ -2,6 +2,7 @@ const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
 const mediasoup = require('./mediasoup');
 const recorder = require('./recorder');
+const config = require('./config');
 
 // Connected clients
 const clients = new Map();
@@ -14,6 +15,29 @@ function initializeWebSocket(server, router) {
   const wss = new WebSocket.Server({ server });
 
   wss.on('connection', (ws, req) => {
+    // Check Basic Auth for WebSocket connections
+    if (config.server.auth?.enabled) {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Basic ')) {
+        console.log('WebSocket connection rejected: No authentication');
+        ws.close(1008, 'Authentication required');
+        return;
+      }
+
+      // Decode credentials
+      const base64Credentials = authHeader.split(' ')[1];
+      const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+      const [username, password] = credentials.split(':');
+
+      // Verify credentials
+      if (username !== config.server.auth.username || password !== config.server.auth.password) {
+        console.log('WebSocket connection rejected: Invalid credentials');
+        ws.close(1008, 'Invalid credentials');
+        return;
+      }
+    }
+
     const clientId = uuidv4();
     // Extract client IP for WebRTC transport configuration
     const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || 
