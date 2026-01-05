@@ -476,7 +476,7 @@ class MasterDashboard extends CCTVClient {
       }
 
       list.innerHTML = statusHtml + data.recordings.map(rec => `
-        <div class="recording-item">
+        <div class="recording-item" data-filename="${this.escapeHtml(rec.name)}">
           <div class="recording-info">
             <div class="recording-name">${this.escapeHtml(rec.name)}</div>
             <div class="recording-meta">
@@ -487,9 +487,24 @@ class MasterDashboard extends CCTVClient {
           <div class="recording-actions">
             <a href="/recordings/${encodeURIComponent(rec.name)}" class="btn btn-sm" target="_blank">Play</a>
             <a href="/recordings/${encodeURIComponent(rec.name)}" class="btn btn-sm" download>Download</a>
+            <button class="btn btn-sm btn-danger delete-recording" data-filename="${this.escapeHtml(rec.name)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              Delete
+            </button>
           </div>
         </div>
       `).join('');
+
+      // Attach delete handlers
+      document.querySelectorAll('.delete-recording').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const filename = e.target.closest('.delete-recording').dataset.filename;
+          this.deleteRecording(filename);
+        });
+      });
 
     } catch (error) {
       console.error('Failed to load recordings:', error);
@@ -499,6 +514,39 @@ class MasterDashboard extends CCTVClient {
 
   hideRecordings() {
     document.getElementById('recordingsModal').style.display = 'none';
+  }
+
+  async deleteRecording(filename) {
+    if (!confirm(`Are you sure you want to delete "${filename}"?\n\nThis action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/recordings/${encodeURIComponent(filename)}`, {
+        method: 'DELETE'
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete recording');
+      }
+
+      console.log('Recording deleted:', filename);
+      
+      // Refresh the recordings list
+      await this.showRecordings();
+      
+      // Show success message (optional - you could add a toast notification here)
+      const item = document.querySelector(`[data-filename="${this.escapeHtml(filename)}"]`);
+      if (item) {
+        item.style.opacity = '0.5';
+        setTimeout(() => item.remove(), 300);
+      }
+    } catch (error) {
+      console.error('Error deleting recording:', error);
+      alert(`Failed to delete recording: ${error.message}`);
+    }
   }
 
   formatFileSize(bytes) {

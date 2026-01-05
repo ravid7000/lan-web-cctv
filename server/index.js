@@ -83,6 +83,37 @@ app.get('/api/recordings', (req, res) => {
   }
 });
 
+// API endpoint to delete a recording
+app.delete('/api/recordings/:filename', (req, res) => {
+  const recordingsDir = path.resolve(config.recording.directory);
+  const filename = req.params.filename;
+  
+  // Security: prevent directory traversal
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return res.status(400).json({ error: 'Invalid filename' });
+  }
+  
+  const filePath = path.join(recordingsDir, filename);
+  
+  // Only allow deletion of video files
+  if (!filename.match(/\.(mp4|webm|mkv)$/i)) {
+    return res.status(400).json({ error: 'Invalid file type' });
+  }
+  
+  try {
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Recording not found' });
+    }
+    
+    fs.unlinkSync(filePath);
+    console.log(`Deleted recording: ${filename}`);
+    res.json({ success: true, message: 'Recording deleted' });
+  } catch (error) {
+    console.error('Error deleting recording:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Serve recordings
 app.use('/recordings', express.static(path.join(__dirname, 'recordings')));
 

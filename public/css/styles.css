@@ -1009,6 +1009,7 @@ code {
   padding: 16px;
   background: var(--bg-tertiary);
   border-radius: var(--radius-md);
+  transition: opacity 0.3s ease;
 }
 
 .recording-name {
@@ -1027,6 +1028,13 @@ code {
 .recording-actions {
   display: flex;
   gap: 8px;
+  align-items: center;
+}
+
+.delete-recording {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .empty-recordings,

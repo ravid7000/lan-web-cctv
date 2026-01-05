@@ -28,7 +28,7 @@ module.exports = {
     // HTTPS configuration (optional)
     // Set enabled: true and provide certificate paths to enable HTTPS
     https: {
-      enabled: true,
+      enabled: false,  // Disable HTTPS for now to match Python server behavior
       keyPath: './certs/key.pem',
       certPath: './certs/cert.pem'
     }
