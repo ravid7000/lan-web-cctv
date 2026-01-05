@@ -23,8 +23,15 @@ function getLocalIPs() {
 
 module.exports = {
   server: {
-    port: 3000,
-    host: '0.0.0.0'
+    port: 8000,
+    host: '0.0.0.0',
+    // HTTPS configuration (optional)
+    // Set enabled: true and provide certificate paths to enable HTTPS
+    https: {
+      enabled: true,
+      keyPath: './certs/key.pem',
+      certPath: './certs/cert.pem'
+    }
   },
   
   mediasoup: {

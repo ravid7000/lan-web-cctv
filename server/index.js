@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
 const path = require('path');
 const config = require('./config');
 const { initializeMediasoup } = require('./mediasoup');
@@ -7,7 +8,32 @@ const { initializeWebSocket } = require('./websocket');
 const fs = require('fs');
 
 const app = express();
-const server = http.createServer(app);
+
+// Create HTTP or HTTPS server based on configuration
+let server;
+if (config.server.https?.enabled) {
+  const keyPath = path.resolve(__dirname, config.server.https.keyPath);
+  const certPath = path.resolve(__dirname, config.server.https.certPath);
+  
+  if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
+    console.error('❌ HTTPS enabled but certificates not found!');
+    console.error(`   Key: ${keyPath}`);
+    console.error(`   Cert: ${certPath}`);
+    console.error('   Run: ./scripts/setup-https.sh or see HTTPS_SETUP.md');
+    process.exit(1);
+  }
+  
+  const options = {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath)
+  };
+  
+  server = https.createServer(options, app);
+  console.log('🔒 HTTPS enabled');
+} else {
+  server = http.createServer(app);
+  console.log('⚠️  HTTP mode (HTTPS recommended for camera access)');
+}
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, '../public')));
@@ -86,12 +112,19 @@ async function start() {
       console.log('\nAccess URLs:');
       
       const localIPs = config.getLocalIPs();
+      const protocol = config.server.https?.enabled ? 'https' : 'http';
+      
       if (localIPs.length > 0) {
         localIPs.forEach(({ name, address }) => {
-          console.log(`  ${name}: http://${address}:${config.server.port}`);
+          console.log(`  ${name}: ${protocol}://${address}:${config.server.port}`);
         });
       } else {
-        console.log(`  Local: http://localhost:${config.server.port}`);
+        console.log(`  Local: ${protocol}://localhost:${config.server.port}`);
+      }
+      
+      if (!config.server.https?.enabled) {
+        console.log('\n💡 Tip: Enable HTTPS for camera access without browser warnings');
+        console.log('   See HTTPS_SETUP.md for instructions');
       }
       
       console.log('\n----------------------------------------');
