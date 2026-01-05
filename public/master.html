@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Master Dashboard - LAN CCTV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="master-page">
+    <div class="master-container">
+      <header class="master-header">
+        <div class="header-left">
+          <a href="/" class="back-link">← Back</a>
+          <div class="header-title">
+            <h1>Master Dashboard</h1>
+            <div class="connection-status" id="connectionStatus">
+              <span class="status-dot"></span>
+              <span class="status-text">Disconnected</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="stream-count">
+            <span id="streamCount">0</span> Active Streams
+          </div>
+          <button class="btn btn-secondary" id="recordingsBtn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Recordings
+          </button>
+        </div>
+      </header>
+
+      <main class="master-main">
+        <!-- Grid View -->
+        <div class="video-grid" id="videoGrid">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <circle cx="12" cy="10" r="3" />
+                <path d="M12 17v4M8 21h8" />
+              </svg>
+            </div>
+            <h2>No Active Streams</h2>
+            <p>Waiting for devices to connect and stream video...</p>
+            <div class="server-url">
+              Connect devices to: <code id="serverUrl">Loading...</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expanded Single View -->
+        <div class="single-view" id="singleView" style="display: none">
+          <div class="single-view-header">
+            <button class="btn btn-icon" id="closeExpandedBtn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+              Back to Grid
+            </button>
+            <div class="expanded-device-name" id="expandedDeviceName">
+              Device Name
+            </div>
+          </div>
+
+          <div class="single-view-video">
+            <video id="expandedVideo" autoplay playsinline></video>
+            <div class="video-stats expanded-stats">
+              <span id="expandedResolution">--</span>
+              <span id="expandedDeviceId">--</span>
+            </div>
+          </div>
+
+          <div class="pan-zoom-controls" id="panZoomControls">
+            <h3>Camera Controls</h3>
+
+            <div class="control-row">
+              <label>Zoom</label>
+              <div class="slider-container">
+                <input
+                  type="range"
+                  id="zoomSlider"
+                  min="1"
+                  max="5"
+                  step="0.1"
+                  value="1"
+                />
+                <span id="zoomValue">1.0x</span>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <label>Pan</label>
+              <div class="pan-buttons">
+                <button class="pan-btn" data-direction="up">↑</button>
+                <div class="pan-horizontal">
+                  <button class="pan-btn" data-direction="left">←</button>
+                  <button class="pan-btn pan-reset" data-direction="reset">
+                    ●
+                  </button>
+                  <button class="pan-btn" data-direction="right">→</button>
+                </div>
+                <button class="pan-btn" data-direction="down">↓</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Recordings Modal -->
+      <div class="modal" id="recordingsModal" style="display: none">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Recordings</h2>
+            <button class="btn btn-icon modal-close" id="closeRecordingsBtn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="recordings-list" id="recordingsList">
+              <div class="loading">Loading recordings...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/mediasoup-client.bundle.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/master.js"></script>
+  </body>
+</html>

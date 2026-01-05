@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Recordings
+server/recordings/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+.pnpm-store

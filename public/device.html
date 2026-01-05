@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stream Device - LAN CCTV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="device-page">
+    <div class="device-container">
+      <header class="device-header">
+        <a href="/" class="back-link">← Back</a>
+        <div class="header-title">
+          <h1>Stream Device</h1>
+          <div class="connection-status" id="connectionStatus">
+            <span class="status-dot"></span>
+            <span class="status-text">Disconnected</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="device-main">
+        <div class="preview-section">
+          <div class="video-preview">
+            <video id="localVideo" autoplay muted playsinline></video>
+            <div
+              class="video-overlay"
+              id="videoOverlay"
+              style="overflow-y: auto"
+            >
+              <div class="overlay-message">Camera Preview</div>
+            </div>
+            <div class="video-stats" id="videoStats">
+              <span id="resolution">--</span>
+              <span id="fps">-- fps</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-section">
+          <div class="control-group">
+            <label for="deviceName">Device Name</label>
+            <input
+              type="text"
+              id="deviceName"
+              placeholder="Enter device name..."
+              value=""
+            />
+          </div>
+
+          <div class="control-group">
+            <label for="cameraSelect">Camera</label>
+            <select id="cameraSelect">
+              <option value="">Loading cameras...</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="qualitySelect">Quality</label>
+            <select id="qualitySelect">
+              <option value="high">High (1080p)</option>
+              <option value="medium">Medium (720p)</option>
+              <option value="low">Low (480p)</option>
+            </select>
+          </div>
+
+          <div class="control-group toggle-group">
+            <label>
+              <input type="checkbox" id="audioEnabled" checked />
+              <span class="toggle-label">Enable Audio</span>
+            </label>
+          </div>
+
+          <div class="button-group">
+            <button id="startBtn" class="btn btn-primary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Start Streaming
+            </button>
+            <button id="stopBtn" class="btn btn-danger" disabled>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="6" y="6" width="12" height="12" />
+              </svg>
+              Stop Streaming
+            </button>
+          </div>
+        </div>
+
+        <div class="zoom-controls" id="zoomControls" style="display: none">
+          <h3>Camera Controls (from Master)</h3>
+          <div class="zoom-info">
+            <span>Zoom: <span id="zoomLevel">1.0x</span></span>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/mediasoup-client.bundle.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/device.js"></script>
+  </body>
+</html>

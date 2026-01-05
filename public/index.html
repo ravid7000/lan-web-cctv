@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LAN CCTV - Video Monitoring System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="landing-container">
+      <div class="hero-bg"></div>
+
+      <header class="landing-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+          </div>
+          <span class="logo-text">LAN CCTV</span>
+        </div>
+      </header>
+
+      <main class="landing-main">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            <span class="title-line">Video Surveillance</span>
+            <span class="title-highlight">On Your Network</span>
+          </h1>
+          <p class="hero-subtitle">
+            Transform any device into a security camera. Stream, monitor, and
+            record video feeds across your local network with high quality
+            WebRTC streaming.
+          </p>
+        </div>
+
+        <div class="role-selection">
+          <a href="master.html" class="role-card role-master">
+            <div class="role-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+            </div>
+            <div class="role-content">
+              <h2>Master Dashboard</h2>
+              <p>
+                View all camera feeds in one place. Monitor, control, and manage
+                your surveillance network.
+              </p>
+            </div>
+            <div class="role-arrow">→</div>
+          </a>
+
+          <a href="device.html" class="role-card role-device">
+            <div class="role-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="5" y="2" width="14" height="20" rx="2" />
+                <circle cx="12" cy="9" r="3" />
+                <line x1="12" y1="18" x2="12" y2="18" />
+              </svg>
+            </div>
+            <div class="role-content">
+              <h2>Stream Device</h2>
+              <p>
+                Turn this device into a camera. Stream video and audio to the
+                monitoring dashboard.
+              </p>
+            </div>
+            <div class="role-arrow">→</div>
+          </a>
+        </div>
+
+        <div class="server-info" id="serverInfo">
+          <div class="info-label">Server Status</div>
+          <div class="info-value" id="serverStatus">Connecting...</div>
+        </div>
+      </main>
+
+      <footer class="landing-footer">
+        <p>
+          All streams are processed locally on your network. No internet
+          required.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // Fetch server info
+      async function fetchServerInfo() {
+        try {
+          const response = await fetch("/api/info");
+          const data = await response.json();
+
+          const statusEl = document.getElementById("serverStatus");
+          if (data.localIPs && data.localIPs.length > 0) {
+            const ip = data.localIPs[0].address;
+            statusEl.innerHTML = `<span class="status-online">●</span> Online at <code>${ip}:${data.port}</code>`;
+          } else {
+            statusEl.innerHTML = `<span class="status-online">●</span> Online at <code>localhost:${data.port}</code>`;
+          }
+        } catch (error) {
+          document.getElementById("serverStatus").innerHTML =
+            '<span class="status-offline">●</span> Unable to connect';
+        }
+      }
+
+      fetchServerInfo();
+    </script>
+  </body>
+</html>

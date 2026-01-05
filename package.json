@@ -1,0 +1,32 @@
+{
+  "name": "lan-cctv",
+  "version": "1.0.0",
+  "description": "LAN-based CCTV video monitoring system with mediasoup",
+  "main": "server/index.js",
+  "scripts": {
+    "build:client": "node build-client.js",
+    "postinstall": "npm run build:client",
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "keywords": [
+    "cctv",
+    "mediasoup",
+    "webrtc",
+    "streaming",
+    "video-surveillance"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mediasoup": "^3.13.0",
+    "mediasoup-client": "^3.7.8",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}
+
