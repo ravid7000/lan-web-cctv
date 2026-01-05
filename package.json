@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "build:client": "node build-client.js",
-    "postinstall": "npm run build:client",
+    "postinstall": "pnpm run build:client",
     "start": "node server/index.js",
     "dev": "node --watch server/index.js"
   },

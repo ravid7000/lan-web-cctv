@@ -23,7 +23,7 @@ function getLocalIPs() {
 
 module.exports = {
   server: {
-    port: 8000,
+    port: 3000,
     host: '0.0.0.0',
     // HTTPS configuration (optional)
     // Set enabled: true and provide certificate paths to enable HTTPS

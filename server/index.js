@@ -135,7 +135,7 @@ async function start() {
     console.log('WebSocket server initialized');
     
     // Start HTTP server
-    server.listen(config.server.port, config.server.host, () => {
+    server.listen(config.server.port, () => {
       console.log('\n========================================');
       console.log('  LAN CCTV Server Started');
       console.log('========================================\n');
